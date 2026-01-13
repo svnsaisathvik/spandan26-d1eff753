@@ -1,13 +1,31 @@
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Calendar } from 'lucide-react';
-import { getSportById, getMatchesBySport, matchSchedule } from '@/data/sportsData';
-import { PointsTable } from '@/components/PointsTable';
+import { useSport, useGroups, useTeams, useMatchesBySport } from '@/hooks/useSportsData';
 import { LiveStream } from '@/components/LiveStream';
-import { ScheduleCard } from '@/components/ScheduleCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function SportDetail() {
   const { sportId } = useParams<{ sportId: string }>();
-  const sport = sportId ? getSportById(sportId) : undefined;
+  const { data: sport, isLoading: sportLoading } = useSport(sportId || '');
+  const { data: groups } = useGroups(sportId || '');
+  const { data: matches } = useMatchesBySport(sportId || '');
+
+  if (sportLoading) {
+    return (
+      <div className="min-h-screen py-12">
+        <div className="container mx-auto px-4">
+          <Skeleton className="h-8 w-32 mb-6" />
+          <Skeleton className="h-16 w-64 mb-10" />
+          <div className="grid lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2">
+              <Skeleton className="h-96 rounded-xl" />
+            </div>
+            <Skeleton className="h-64 rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (!sport) {
     return (
@@ -21,13 +39,6 @@ export default function SportDetail() {
       </div>
     );
   }
-
-  // Get matches for this sport
-  const sportMatches = matchSchedule.filter(
-    (match) =>
-      match.sport.toLowerCase().replace(/\s+/g, '-') === sportId ||
-      match.sport.toLowerCase() === sport.name.toLowerCase()
-  );
 
   const backPath = {
     team: '/team-sports',
@@ -68,17 +79,21 @@ export default function SportDetail() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Live Stream */}
-            {sport.liveStreamUrl && (
-              <LiveStream url={sport.liveStreamUrl} title={sport.name} />
+            {sport.live_stream_url && (
+              <LiveStream url={sport.live_stream_url} title={sport.name} />
             )}
 
             {/* Points Table (Team Sports Only) */}
-            {sport.groups && sport.groups.length > 0 && (
+            {groups && groups.length > 0 && (
               <div>
                 <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
                   📊 Points Table
                 </h2>
-                <PointsTable groups={sport.groups} />
+                <div className="space-y-6">
+                  {groups.map((group) => (
+                    <GroupPointsTable key={group.id} groupId={group.id} groupName={group.name} />
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -90,10 +105,10 @@ export default function SportDetail() {
                 <Calendar className="w-5 h-5 text-accent" />
                 Match Schedule
               </h3>
-              {sportMatches.length > 0 ? (
+              {matches && matches.length > 0 ? (
                 <div className="space-y-3">
-                  {sportMatches.map((match) => (
-                    <ScheduleCard key={match.id} match={match} />
+                  {matches.map((match) => (
+                    <ScheduleItem key={match.id} match={match} />
                   ))}
                 </div>
               ) : (
@@ -105,6 +120,86 @@ export default function SportDetail() {
           </div>
         </div>
       </div>
+    </div>
+  );
+}
+
+function GroupPointsTable({ groupId, groupName }: { groupId: string; groupName: string }) {
+  const { data: teams, isLoading } = useTeams(groupId);
+
+  if (isLoading) {
+    return <Skeleton className="h-40 rounded-xl" />;
+  }
+
+  if (!teams || teams.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="bg-card rounded-xl overflow-hidden shadow-sm">
+      <div className="bg-primary px-4 py-3">
+        <h4 className="font-semibold text-primary-foreground">{groupName}</h4>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="points-table">
+          <thead>
+            <tr className="bg-secondary">
+              <th className="!bg-secondary !text-secondary-foreground">Team</th>
+              <th className="!bg-secondary !text-secondary-foreground text-center">P</th>
+              <th className="!bg-secondary !text-secondary-foreground text-center">W</th>
+              <th className="!bg-secondary !text-secondary-foreground text-center">L</th>
+              <th className="!bg-secondary !text-secondary-foreground text-center">Pts</th>
+            </tr>
+          </thead>
+          <tbody>
+            {teams.map((team, index) => (
+              <tr
+                key={team.id}
+                className={`${index === 0 ? 'bg-sport-green/10' : 'bg-card'} hover:bg-secondary/50 transition-colors`}
+              >
+                <td className="font-medium">
+                  <div className="flex items-center gap-2">
+                    {index === 0 && (
+                      <span className="w-5 h-5 rounded-full bg-sport-green text-sport-green-foreground flex items-center justify-center text-xs font-bold">
+                        1
+                      </span>
+                    )}
+                    {team.name}
+                  </div>
+                </td>
+                <td className="text-center">{team.matches_played}</td>
+                <td className="text-center text-sport-green font-semibold">{team.wins}</td>
+                <td className="text-center text-destructive font-semibold">{team.losses}</td>
+                <td className="text-center font-bold text-primary">{team.points}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function ScheduleItem({ match }: { match: any }) {
+  const isFinal = match.match_name.toLowerCase().includes('final');
+
+  return (
+    <div className={`p-3 rounded-lg bg-secondary/50 ${isFinal ? 'ring-2 ring-accent' : ''}`}>
+      <div className="flex items-center justify-between gap-2">
+        <div>
+          {isFinal && (
+            <span className="text-xs font-bold text-accent">🏆 FINAL</span>
+          )}
+          <p className="font-medium text-sm">{match.match_name}</p>
+        </div>
+        <div className="text-right text-xs text-muted-foreground">
+          <p>Jan {match.match_date}</p>
+          <p>{match.match_time}</p>
+        </div>
+      </div>
+      {match.venue && (
+        <p className="text-xs text-muted-foreground mt-1">📍 {match.venue}</p>
+      )}
     </div>
   );
 }

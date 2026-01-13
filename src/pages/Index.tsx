@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Calendar, Trophy, Users, Zap } from 'lucide-react';
-import { teamSports, individualSports, minorSports } from '@/data/sportsData';
+import { useSportsByCategory } from '@/hooks/useSportsData';
 
 const Index = () => {
+  const { data: teamSports } = useSportsByCategory('team');
+  const { data: individualSports } = useSportsByCategory('individual');
+  const { data: minorSports } = useSportsByCategory('minor');
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -51,15 +55,15 @@ const Index = () => {
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-primary">{teamSports.length}</div>
+              <div className="text-3xl md:text-4xl font-bold text-primary">{teamSports?.length || 5}</div>
               <div className="text-sm text-muted-foreground mt-1">Team Sports</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-sport-green">{individualSports.length}</div>
+              <div className="text-3xl md:text-4xl font-bold text-sport-green">{individualSports?.length || 3}</div>
               <div className="text-sm text-muted-foreground mt-1">Individual Sports</div>
             </div>
             <div className="text-center">
-              <div className="text-3xl md:text-4xl font-bold text-accent">{minorSports.length}</div>
+              <div className="text-3xl md:text-4xl font-bold text-accent">{minorSports?.length || 4}</div>
               <div className="text-sm text-muted-foreground mt-1">Minor Sports</div>
             </div>
             <div className="text-center">
@@ -93,11 +97,11 @@ const Index = () => {
                     Cricket, Football, Volleyball & more with live points tables
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {teamSports.slice(0, 3).map((sport) => (
+                    {teamSports?.slice(0, 3).map((sport) => (
                       <span key={sport.id} className="text-2xl">{sport.icon}</span>
                     ))}
-                    {teamSports.length > 3 && (
-                      <span className="text-sm text-muted-foreground self-center">+{teamSports.length - 3}</span>
+                    {(teamSports?.length || 0) > 3 && (
+                      <span className="text-sm text-muted-foreground self-center">+{(teamSports?.length || 0) - 3}</span>
                     )}
                   </div>
                 </div>
@@ -116,7 +120,7 @@ const Index = () => {
                     Badminton, Chess & Table Tennis with live streaming
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {individualSports.map((sport) => (
+                    {individualSports?.map((sport) => (
                       <span key={sport.id} className="text-2xl">{sport.icon}</span>
                     ))}
                   </div>
@@ -136,7 +140,7 @@ const Index = () => {
                     Gully Cricket, Tug of War, Pentathlon & Carrom
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {minorSports.map((sport) => (
+                    {minorSports?.map((sport) => (
                       <span key={sport.id} className="text-2xl">{sport.icon}</span>
                     ))}
                   </div>

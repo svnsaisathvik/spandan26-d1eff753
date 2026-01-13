@@ -1,7 +1,10 @@
-import { minorSports } from '@/data/sportsData';
+import { useSportsByCategory } from '@/hooks/useSportsData';
 import { SportCard } from '@/components/SportCard';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function MinorSports() {
+  const { data: sports, isLoading } = useSportsByCategory('minor');
+
   return (
     <div className="min-h-screen py-12">
       <div className="container mx-auto px-4">
@@ -17,11 +20,19 @@ export default function MinorSports() {
         </div>
 
         {/* Sports Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {minorSports.map((sport) => (
-            <SportCard key={sport.id} sport={sport} basePath="/minor-sports" />
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4].map((i) => (
+              <Skeleton key={i} className="h-40 rounded-xl" />
+            ))}
+          </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {sports?.map((sport) => (
+              <SportCard key={sport.id} sport={sport} basePath="/minor-sports" />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
