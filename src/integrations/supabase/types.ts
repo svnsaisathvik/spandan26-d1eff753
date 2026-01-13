@@ -14,7 +14,144 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      groups: {
+        Row: {
+          created_at: string | null
+          id: string
+          name: string
+          sport_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          name: string
+          sport_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          name?: string
+          sport_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "groups_sport_id_fkey"
+            columns: ["sport_id"]
+            isOneToOne: false
+            referencedRelation: "sports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      matches: {
+        Row: {
+          created_at: string | null
+          id: string
+          match_date: string
+          match_name: string
+          match_time: string
+          sport_id: string
+          venue: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          match_date: string
+          match_name: string
+          match_time: string
+          sport_id: string
+          venue?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          match_date?: string
+          match_name?: string
+          match_time?: string
+          sport_id?: string
+          venue?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "matches_sport_id_fkey"
+            columns: ["sport_id"]
+            isOneToOne: false
+            referencedRelation: "sports"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sports: {
+        Row: {
+          category: string
+          created_at: string | null
+          description: string | null
+          icon: string
+          id: string
+          live_stream_url: string | null
+          name: string
+        }
+        Insert: {
+          category: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id: string
+          live_stream_url?: string | null
+          name: string
+        }
+        Update: {
+          category?: string
+          created_at?: string | null
+          description?: string | null
+          icon?: string
+          id?: string
+          live_stream_url?: string | null
+          name?: string
+        }
+        Relationships: []
+      }
+      teams: {
+        Row: {
+          created_at: string | null
+          group_id: string
+          id: string
+          losses: number | null
+          matches_played: number | null
+          name: string
+          points: number | null
+          wins: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          group_id: string
+          id?: string
+          losses?: number | null
+          matches_played?: number | null
+          name: string
+          points?: number | null
+          wins?: number | null
+        }
+        Update: {
+          created_at?: string | null
+          group_id?: string
+          id?: string
+          losses?: number | null
+          matches_played?: number | null
+          name?: string
+          points?: number | null
+          wins?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_group_id_fkey"
+            columns: ["group_id"]
+            isOneToOne: false
+            referencedRelation: "groups"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never

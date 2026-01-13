@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
-import type { Sport } from '@/data/sportsData';
+import type { Sport } from '@/hooks/useSportsData';
 
 interface SportCardProps {
   sport: Sport;
@@ -32,7 +32,7 @@ export function SportCard({ sport, basePath }: SportCardProps) {
           <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-accent group-hover:translate-x-1 transition-all" />
         </div>
         
-        {sport.liveStreamUrl && (
+        {sport.live_stream_url && (
           <div className="mt-4 pt-4 border-t border-border">
             <span className="live-badge">
               <span className="w-2 h-2 bg-current rounded-full animate-pulse" />
@@ -41,10 +41,10 @@ export function SportCard({ sport, basePath }: SportCardProps) {
           </div>
         )}
         
-        {sport.groups && sport.groups.length > 0 && (
+        {sport.category === 'team' && (
           <div className="mt-4 pt-4 border-t border-border">
             <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-              {sport.groups.length} Group{sport.groups.length > 1 ? 's' : ''} • Points Table
+              Points Table Available
             </span>
           </div>
         )}

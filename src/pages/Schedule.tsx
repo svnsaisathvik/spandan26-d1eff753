@@ -1,17 +1,20 @@
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
-import { getMatchesByDate, festDates } from '@/data/sportsData';
+import { useMatchesByDate } from '@/hooks/useSportsData';
 import { DateFilter } from '@/components/DateFilter';
 import { ScheduleCard } from '@/components/ScheduleCard';
+import { Skeleton } from '@/components/ui/skeleton';
+
+const festDates = ['22', '23', '24', '25'];
 
 export default function Schedule() {
   const [selectedDate, setSelectedDate] = useState(festDates[0]);
-  const matches = getMatchesByDate(selectedDate);
+  const { data: matches, isLoading } = useMatchesByDate(selectedDate);
 
   // Group matches by category
-  const teamMatches = matches.filter((m) => m.sportCategory === 'team');
-  const individualMatches = matches.filter((m) => m.sportCategory === 'individual');
-  const minorMatches = matches.filter((m) => m.sportCategory === 'minor');
+  const teamMatches = matches?.filter((m: any) => m.sports?.category === 'team') || [];
+  const individualMatches = matches?.filter((m: any) => m.sports?.category === 'individual') || [];
+  const minorMatches = matches?.filter((m: any) => m.sports?.category === 'minor') || [];
 
   return (
     <div className="min-h-screen py-12">
@@ -34,7 +37,13 @@ export default function Schedule() {
         </div>
 
         {/* Schedule Content */}
-        {matches.length === 0 ? (
+        {isLoading ? (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <Skeleton key={i} className="h-24 rounded-lg" />
+            ))}
+          </div>
+        ) : !matches || matches.length === 0 ? (
           <div className="text-center py-16 bg-card rounded-xl">
             <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
             <h3 className="text-xl font-semibold mb-2">No matches scheduled</h3>
@@ -55,8 +64,19 @@ export default function Schedule() {
                   </span>
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {teamMatches.map((match) => (
-                    <ScheduleCard key={match.id} match={match} />
+                  {teamMatches.map((match: any) => (
+                    <ScheduleCard
+                      key={match.id}
+                      match={{
+                        id: match.id,
+                        sport: match.sports?.name || 'Unknown',
+                        sportCategory: match.sports?.category || 'team',
+                        matchName: match.match_name,
+                        date: match.match_date,
+                        time: match.match_time,
+                        venue: match.venue,
+                      }}
+                    />
                   ))}
                 </div>
               </div>
@@ -73,8 +93,19 @@ export default function Schedule() {
                   </span>
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {individualMatches.map((match) => (
-                    <ScheduleCard key={match.id} match={match} />
+                  {individualMatches.map((match: any) => (
+                    <ScheduleCard
+                      key={match.id}
+                      match={{
+                        id: match.id,
+                        sport: match.sports?.name || 'Unknown',
+                        sportCategory: match.sports?.category || 'individual',
+                        matchName: match.match_name,
+                        date: match.match_date,
+                        time: match.match_time,
+                        venue: match.venue,
+                      }}
+                    />
                   ))}
                 </div>
               </div>
@@ -91,8 +122,19 @@ export default function Schedule() {
                   </span>
                 </h2>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {minorMatches.map((match) => (
-                    <ScheduleCard key={match.id} match={match} />
+                  {minorMatches.map((match: any) => (
+                    <ScheduleCard
+                      key={match.id}
+                      match={{
+                        id: match.id,
+                        sport: match.sports?.name || 'Unknown',
+                        sportCategory: match.sports?.category || 'minor',
+                        matchName: match.match_name,
+                        date: match.match_date,
+                        time: match.match_time,
+                        venue: match.venue,
+                      }}
+                    />
                   ))}
                 </div>
               </div>
