@@ -3,19 +3,21 @@ import { ArrowRight, Calendar, Trophy, Users, Zap } from 'lucide-react';
 import { useSportsByCategory, useSettings } from '@/hooks/useSportsData';
 import { CountdownTimer } from '@/components/CountdownTimer';
 import { RunningMatchesBanner } from '@/components/RunningMatchesBanner';
-
 const Index = () => {
-  const { data: teamSports } = useSportsByCategory('team');
-  const { data: individualSports } = useSportsByCategory('individual');
-  const { data: minorSports } = useSportsByCategory('minor');
-  const { data: settings } = useSettings();
-
-  const festStartDate = settings?.fest_start_date 
-    ? new Date(settings.fest_start_date) 
-    : new Date('2026-01-22T09:00:00');
-
-  return (
-    <div className="min-h-screen">
+  const {
+    data: teamSports
+  } = useSportsByCategory('team');
+  const {
+    data: individualSports
+  } = useSportsByCategory('individual');
+  const {
+    data: minorSports
+  } = useSportsByCategory('minor');
+  const {
+    data: settings
+  } = useSettings();
+  const festStartDate = settings?.fest_start_date ? new Date(settings.fest_start_date) : new Date('2026-01-22T09:00:00');
+  return <div className="min-h-screen">
       {/* Running Matches Banner */}
       <RunningMatchesBanner />
 
@@ -43,24 +45,18 @@ const Index = () => {
               </p>
               
               <div className="flex flex-wrap gap-4">
-                <Link
-                  to="/schedule"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-semibold hover:opacity-90 transition-opacity"
-                >
+                <Link to="/schedule" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-accent-foreground font-semibold hover:opacity-90 transition-opacity">
                   View Schedule
                   <ArrowRight className="w-5 h-5" />
                 </Link>
-                <Link
-                  to="/team-sports"
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-foreground/10 text-primary-foreground font-semibold hover:bg-primary-foreground/20 transition-colors border border-primary-foreground/20"
-                >
+                <Link to="/team-sports" className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary-foreground/10 text-primary-foreground font-semibold hover:bg-primary-foreground/20 transition-colors border border-primary-foreground/20">
                   Explore Sports
                 </Link>
               </div>
             </div>
 
             {/* Countdown Timer */}
-            <div className="flex justify-center lg:justify-end">
+            <div className="lg:justify-end flex items-start justify-center">
               <CountdownTimer targetDate={festStartDate} />
             </div>
           </div>
@@ -113,9 +109,7 @@ const Index = () => {
                     Cricket, Football, Volleyball & more with live points tables
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {teamSports?.slice(0, 3).map((sport) => (
-                      <span key={sport.id} className="text-2xl">{sport.icon}</span>
-                    ))}
+                    {teamSports?.slice(0, 3).map(sport => <span key={sport.id} className="text-2xl">{sport.icon}</span>)}
                   </div>
                 </div>
               </div>
@@ -132,9 +126,7 @@ const Index = () => {
                     Badminton, Chess & Table Tennis with live streaming
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {individualSports?.map((sport) => (
-                      <span key={sport.id} className="text-2xl">{sport.icon}</span>
-                    ))}
+                    {individualSports?.map(sport => <span key={sport.id} className="text-2xl">{sport.icon}</span>)}
                   </div>
                 </div>
               </div>
@@ -151,9 +143,7 @@ const Index = () => {
                     Gully Cricket, Tug of War, Pentathlon & Carrom
                   </p>
                   <div className="flex flex-wrap gap-2 justify-center">
-                    {minorSports?.map((sport) => (
-                      <span key={sport.id} className="text-2xl">{sport.icon}</span>
-                    ))}
+                    {minorSports?.map(sport => <span key={sport.id} className="text-2xl">{sport.icon}</span>)}
                   </div>
                 </div>
               </div>
@@ -169,17 +159,12 @@ const Index = () => {
           <p className="text-muted-foreground max-w-xl mx-auto mb-8">
             Check the complete schedule filtered by date and never miss your favorite matches.
           </p>
-          <Link
-            to="/schedule"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity"
-          >
+          <Link to="/schedule" className="inline-flex items-center gap-2 px-8 py-4 rounded-lg bg-primary text-primary-foreground font-semibold hover:opacity-90 transition-opacity">
             <Calendar className="w-5 h-5" />
             View Full Schedule
           </Link>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
