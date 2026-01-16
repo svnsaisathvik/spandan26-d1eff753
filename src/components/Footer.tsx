@@ -4,10 +4,10 @@ export function Footer() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             
-            <span className="font-display text-xl tracking-wider">SPORTS FEST '25</span>
+            <span className="font-display text-xl tracking-wider">SPANDAN '26</span>
           </div>
           <div className="text-sm text-primary-foreground/80 text-center">
-            <p>January 22-25, 2025</p>
+            <p>January 22-25, 2026</p>
             <p className="mt-1">Intra-College Sports Championship</p>
           </div>
           <div className="text-xs text-primary-foreground/60">
