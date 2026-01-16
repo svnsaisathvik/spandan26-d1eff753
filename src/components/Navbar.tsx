@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Trophy } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 const navItems = [{
   name: 'Home',
   path: '/'
@@ -25,10 +25,8 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
-            <div className="p-2 rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-105">
-              <Trophy className="w-5 h-5" />
-            </div>
-            <span className="font-display text-xl tracking-wider text-primary">
+            
+            <span className="font-display text-xl tracking-wider text-primary font-extrabold">
               SPANDAN '26
             </span>
           </Link>
