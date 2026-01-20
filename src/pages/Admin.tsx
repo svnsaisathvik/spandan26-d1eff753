@@ -6,9 +6,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { Trash2, Plus, Video, Calendar, Trophy, Users, Settings, Play, Square, Upload } from 'lucide-react';
+import { Trash2, Plus, Video, Calendar, Trophy, Users, Settings, Play, Square, Upload, Download } from 'lucide-react';
 import { BulkImport } from '@/components/BulkImport';
 import { TimePicker } from '@/components/TimePicker';
+import { DataExport } from '@/components/DataExport';
+import { AdminPinGate } from '@/components/AdminPinGate';
 import { toast } from 'sonner';
 import {
   useSports,
@@ -30,6 +32,12 @@ import {
 } from '@/hooks/useSportsData';
 
 export default function Admin() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  if (!isAuthenticated) {
+    return <AdminPinGate onSuccess={() => setIsAuthenticated(true)} />;
+  }
+
   return (
     <div className="min-h-screen py-8">
       <div className="container mx-auto px-4">
@@ -41,7 +49,7 @@ export default function Admin() {
         </div>
 
         <Tabs defaultValue="settings" className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-6 h-auto p-1">
+          <TabsList className="grid w-full grid-cols-7 h-auto p-1">
             <TabsTrigger value="settings" className="flex-col sm:flex-row gap-1 sm:gap-2 py-2 px-1 sm:px-3 text-xs sm:text-sm">
               <Settings className="w-4 h-4" />
               <span className="hidden xs:inline sm:inline">Settings</span>
@@ -66,6 +74,10 @@ export default function Admin() {
               <Upload className="w-4 h-4" />
               <span className="hidden xs:inline sm:inline">Import</span>
             </TabsTrigger>
+            <TabsTrigger value="export" className="flex-col sm:flex-row gap-1 sm:gap-2 py-2 px-1 sm:px-3 text-xs sm:text-sm">
+              <Download className="w-4 h-4" />
+              <span className="hidden xs:inline sm:inline">Export</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="settings">
@@ -85,6 +97,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="import">
             <BulkImportTab />
+          </TabsContent>
+          <TabsContent value="export">
+            <DataExport />
           </TabsContent>
         </Tabs>
       </div>
