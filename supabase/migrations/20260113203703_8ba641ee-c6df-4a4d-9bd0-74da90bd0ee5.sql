@@ -41,10 +41,10 @@ CREATE TABLE public.matches (
 );
 
 -- Enable RLS but allow all operations (no auth for now)
-ALTER TABLE public.sports ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.groups ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.teams ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.matches ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.sports DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.groups DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.teams DISABLE ROW LEVEL SECURITY;
+ALTER TABLE public.matches DISABLE ROW LEVEL SECURITY;
 
 -- Public read/write policies (no auth required)
 CREATE POLICY "Allow public read on sports" ON public.sports FOR SELECT USING (true);
